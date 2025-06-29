@@ -17,6 +17,7 @@ export interface UserCredentials {
  * - username - The unique username of the user
  * - password - The user's password
  * - dateJoined - The date when the user registered
+ * - biography - The user's biography (optional)
  */
 export interface User extends UserCredentials {
   _id?: ObjectId;
@@ -76,7 +77,7 @@ export type UsersResponse = SafeUser[] | { error: string };
  */
 export interface UserUpdatePayload {
   user: User;
-  type: 'created' | 'deleted';
+  type: 'created' | 'deleted' | 'updated';
 }
 
 /**
@@ -86,5 +87,8 @@ export interface UserUpdatePayload {
  * - biography - The new biography content
  */
 export interface UpdateBiographyRequest extends Request {
-  // TODO: Task 1 - Define the request interface for updating a user's biography
+  body: {
+    username: string;
+    biography: string;
+  };
 }

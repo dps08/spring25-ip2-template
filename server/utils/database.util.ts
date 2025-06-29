@@ -61,8 +61,11 @@ export const populateDocument = async (
         throw new Error('Chat not found');
       }
 
+      // Type assertion to tell TypeScript that messages are populated
+      const populatedMessages = chatDoc.messages as unknown as Message[];
+
       const messagesWithUser = await Promise.all(
-        chatDoc.messages.map(async (messageDoc: Message) => {
+        populatedMessages.map(async (messageDoc: Message) => {
           if (!messageDoc) return null;
 
           let userDoc = null;

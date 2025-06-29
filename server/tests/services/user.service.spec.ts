@@ -93,6 +93,38 @@ describe('getUsersList', () => {
   // TODO: Task 1 - Add more tests for getUsersList
 });
 
+describe('getUsersList', () => {
+  beforeEach(() => {
+    mockingoose.resetAll();
+  });
+
+  it('should return the users', async () => {
+    mockingoose(UserModel).toReturn([safeUser], 'find');
+
+    const retrievedUsers = (await getUsersList()) as SafeUser[];
+
+    expect(retrievedUsers[0].username).toEqual(safeUser.username);
+    expect(retrievedUsers[0].dateJoined).toEqual(safeUser.dateJoined);
+  });
+
+  it('should return error if database error occurs', async () => {
+    mockingoose(UserModel).toReturn(new Error('Database error'), 'find');
+
+    const result = await getUsersList();
+
+    expect('error' in result).toBe(true);
+  });
+
+  it('should return empty array if no users found', async () => {
+    mockingoose(UserModel).toReturn([], 'find');
+
+    const result = await getUsersList();
+
+    expect(Array.isArray(result)).toBe(true);
+    expect((result as SafeUser[]).length).toBe(0);
+  });
+});
+
 describe('loginUser', () => {
   beforeEach(() => {
     mockingoose.resetAll();

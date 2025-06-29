@@ -6,4 +6,6 @@ module.exports = {
     '^.+.tsx?$': ['ts-jest', {}],
   },
   setupFilesAfterEnv: ['./jest.setup.ts'],
+  // Disable memory leak detection
+  detectLeaks: false,
 };

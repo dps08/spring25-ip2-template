@@ -33,7 +33,7 @@ const useAuth = (authType: 'login' | 'signup') => {
    * Toggles the visibility of the password input field.
    */
   const togglePasswordVisibility = () => {
-    // TODO - Task 1: Toggle password visibility
+    setShowPassword(!showPassword);
   };
 
   /**
@@ -46,7 +46,26 @@ const useAuth = (authType: 'login' | 'signup') => {
     e: ChangeEvent<HTMLInputElement>,
     field: 'username' | 'password' | 'confirmPassword',
   ) => {
-    // TODO - Task 1: Handle input changes for the fields
+    const { value } = e.target;
+
+    switch (field) {
+      case 'username':
+        setUsername(value);
+        break;
+      case 'password':
+        setPassword(value);
+        break;
+      case 'confirmPassword':
+        setPasswordConfirmation(value);
+        break;
+      default:
+        break; // Doing nothing for unknown fields
+    }
+
+    // Clear error when user starts typing
+    if (err) {
+      setErr('');
+    }
   };
 
   /**
@@ -56,8 +75,32 @@ const useAuth = (authType: 'login' | 'signup') => {
    * @returns {boolean} True if inputs are valid, false otherwise.
    */
   const validateInputs = (): boolean => {
-    // TODO - Task 1: Validate inputs for login and signup forms
-    // Display any errors to the user
+    // Check if username is empty
+    if (!username.trim()) {
+      setErr('Username is required');
+      return false;
+    }
+
+    // Check if password is empty
+    if (!password) {
+      setErr('Password is required');
+      return false;
+    }
+
+    // Additional validation for signup
+    if (authType === 'signup') {
+      if (!passwordConfirmation) {
+        setErr('Please confirm your password');
+        return false;
+      }
+
+      if (password !== passwordConfirmation) {
+        setErr('Passwords do not match');
+        return false;
+      }
+    }
+
+    return true;
   };
 
   /**
@@ -69,19 +112,32 @@ const useAuth = (authType: 'login' | 'signup') => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // TODO - Task 1: Validate inputs
+    // Validate inputs
+    if (!validateInputs()) {
+      return;
+    }
 
     let user: User;
 
     try {
-      // TODO - Task 1: Handle the form submission, calling appropriate API routes
-      // based on the auth type
+      const credentials = { username, password };
+
+      if (authType === 'login') {
+        user = await loginUser(credentials);
+      } else {
+        user = await createUser(credentials);
+      }
 
       // Redirect to home page on successful login/signup
       setUser(user);
       navigate('/home');
     } catch (error) {
-      // TODO - Task 1: Display error message
+      // Display error message
+      if (error instanceof Error) {
+        setErr(error.message);
+      } else {
+        setErr(`Failed to ${authType}`);
+      }
     }
   };
 

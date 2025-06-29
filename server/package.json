@@ -3,7 +3,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "mongodb": "^6.12.0",
-    "mongoose": "^8.9.2",
+    "mongoose": "8.9.2",
     "nanoid": "^3.3.8",
     "npm": "^11.0.0",
     "socket.io": "^4.8.1"
@@ -46,6 +46,7 @@
     "start:prod": "node ./dist/server.js",
     "stryker": "stryker run",
     "populate-db": "ts-node populate_db.ts mongodb://127.0.0.1:27017/fake_so",
-    "delete-db": "ts-node remove_db.ts mongodb://127.0.0.1:27017/fake_so"
+    "delete-db": "ts-node remove_db.ts mongodb://127.0.0.1:27017/fake_so",
+    "test:no-leak": "jest -w=1 --coverage"
   }
 }
